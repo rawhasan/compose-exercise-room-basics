@@ -33,4 +33,7 @@ implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
 
 // Compose LiveData (StackOverflow)
 implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+
+// LiveData (Flow to LiveData: asLiveData)
+implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 ```
