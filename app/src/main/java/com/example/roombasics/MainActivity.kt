@@ -9,17 +9,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,7 +29,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val wordViewModel by viewModels<WordViewModel> {
-            WordViewModelFactory((this.applicationContext as WordsApplication).repository)
+            WordViewModelFactory((application as WordsApplication).repository)
         }
 
         setContent {
@@ -66,7 +65,12 @@ fun WordBookApp(wordViewModel: WordViewModel) {
                     .height(56.dp)
                     .padding(start = 8.dp)
             ) {
-                Text("Add")
+                Icon(
+                    imageVector = Icons.Filled.AddCircle,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text("Add", modifier = Modifier.padding(start = 8.dp))
             }
         }
 
@@ -81,12 +85,14 @@ fun WordBookApp(wordViewModel: WordViewModel) {
             }
         }
 
-        Button(onClick = { /*TODO*/ }) {
-            Text(
-                "Clear Words",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
+        Button(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Icon(imageVector = Icons.Filled.Delete, contentDescription = null)
+            Text("Clear Words", modifier = Modifier.padding(start = 16.dp))
         }
     }
 }
