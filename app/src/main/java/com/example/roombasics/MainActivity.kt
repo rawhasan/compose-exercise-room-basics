@@ -1,6 +1,7 @@
 package com.example.roombasics
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,6 +19,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,7 @@ fun WordBookApp(wordViewModel: WordViewModel) {
     val words: List<Word> by wordViewModel.allWords.observeAsState(listOf())
 
     var newWord by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -56,10 +59,14 @@ fun WordBookApp(wordViewModel: WordViewModel) {
                 label = { Text("New Word") },
                 modifier = Modifier.weight(1f)
             )
+            // Add Button
             Button(
                 onClick = {
-                    if (newWord.trim().isNotEmpty())
-                        wordViewModel.insert(Word(newWord))
+                    if (newWord.trim().isNotEmpty()) {
+                        wordViewModel.insert(Word(newWord.trim()))
+                        newWord = ""
+                        Toast.makeText(context, "Word added", Toast.LENGTH_SHORT).show()
+                    }
                 },
                 modifier = Modifier
                     .height(56.dp)
@@ -85,6 +92,7 @@ fun WordBookApp(wordViewModel: WordViewModel) {
             }
         }
 
+        // Clear Button
         Button(
             onClick = { /*TODO*/ },
             modifier = Modifier
