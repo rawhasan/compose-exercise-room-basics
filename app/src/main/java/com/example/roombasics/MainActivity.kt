@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.roombasics.data.Word
@@ -35,13 +35,19 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            WordBookApp(wordViewModel)
+            WordBookApp(wordViewModel, onAddWord = { wordViewModel.addWord(it) }, onDeleteWord = {},
+                onClearWords = { wordViewModel.clearWords() })
         }
     }
 }
 
 @Composable
-fun WordBookApp(wordViewModel: WordViewModel) {
+fun WordBookApp(
+    wordViewModel: WordViewModel,
+    onAddWord: (Word) -> Unit,
+    onDeleteWord: (Word) -> Unit,
+    onClearWords: () -> Unit
+) {
     val words: List<Word> by wordViewModel.allWords.observeAsState(listOf())
 
     var newWord by remember { mutableStateOf("") }
@@ -63,7 +69,7 @@ fun WordBookApp(wordViewModel: WordViewModel) {
             Button(
                 onClick = {
                     if (newWord.trim().isNotEmpty()) {
-                        wordViewModel.insert(Word(newWord.trim()))
+                        onAddWord(Word(newWord.trim()))
                         newWord = ""
                         Toast.makeText(context, "Word added", Toast.LENGTH_SHORT).show()
                     }
@@ -88,13 +94,13 @@ fun WordBookApp(wordViewModel: WordViewModel) {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(words) { word ->
-                WordItemLayout(word)
+                WordItemLayout(word, onWordClicked = { onDeleteWord(it) })
             }
         }
 
         // Clear Button
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onClearWords() },
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
@@ -106,13 +112,14 @@ fun WordBookApp(wordViewModel: WordViewModel) {
 }
 
 @Composable
-fun WordItemLayout(word: Word) {
+fun WordItemLayout(word: Word, onWordClicked: (Word) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.primaryVariant)
-            .padding(vertical = 20.dp, horizontal = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 20.dp, horizontal = 24.dp)
+            .clickable { onWordClicked(word) },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(painter = painterResource(R.drawable.ic_star), contentDescription = null)
         Text(
@@ -122,11 +129,5 @@ fun WordItemLayout(word: Word) {
             modifier = Modifier.padding(start = 16.dp)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    //WordBookApp(wordViewModel)
 }
 

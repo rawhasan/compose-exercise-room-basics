@@ -1,7 +1,6 @@
 package com.example.roombasics
 
 import androidx.annotation.WorkerThread
-import androidx.room.Dao
 import com.example.roombasics.data.Word
 import com.example.roombasics.data.WordDao
 import kotlinx.coroutines.flow.Flow
@@ -21,5 +20,11 @@ class WordRepository(private val wordDao: WordDao) {
     @WorkerThread
     suspend fun insert(word: Word) {
         wordDao.insert(word)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun deleteAllWords() {
+        wordDao.deleteAll()
     }
 }
