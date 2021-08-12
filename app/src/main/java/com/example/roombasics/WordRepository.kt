@@ -18,7 +18,7 @@ class WordRepository(private val wordDao: WordDao) {
     // off the main thread.
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun insert(word: Word) {
+    suspend fun insertWord(word: Word) {
         wordDao.insert(word)
     }
 
@@ -26,5 +26,11 @@ class WordRepository(private val wordDao: WordDao) {
     @WorkerThread
     suspend fun deleteAllWords() {
         wordDao.deleteAll()
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun deleteWord(word: Word) {
+        wordDao.delete(word)
     }
 }

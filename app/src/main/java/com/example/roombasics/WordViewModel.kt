@@ -16,11 +16,15 @@ class WordViewModel(private val repository: WordRepository) : ViewModel() {
      * Launching a new coroutine to insert the data in a non-blocking way
      */
     fun addWord(word: Word) = viewModelScope.launch {
-        repository.insert(word)
+        repository.insertWord(word)
     }
 
     fun clearWords() = viewModelScope.launch {
         repository.deleteAllWords()
+    }
+
+    fun deleteWord(word: Word) = viewModelScope.launch {
+        repository.deleteWord(word)
     }
 }
 

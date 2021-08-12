@@ -35,8 +35,12 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            WordBookApp(wordViewModel, onAddWord = { wordViewModel.addWord(it) }, onDeleteWord = {},
-                onClearWords = { wordViewModel.clearWords() })
+            WordBookApp(
+                wordViewModel = wordViewModel,
+                onAddWord = { wordViewModel.addWord(it) },
+                onDeleteWord = { wordViewModel.deleteWord(it) },
+                onClearWords = { wordViewModel.clearWords() }
+            )
         }
     }
 }
