@@ -1,5 +1,5 @@
 # Compose Exercise: Room Basics
-- Add, display, and delete data from a Room database.
+- Add, display, and delete data from a Room database using Jetpack Compose.
 
 ## Dependencies
 ```kt
@@ -37,3 +37,7 @@ implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 // LiveData (Flow to LiveData: asLiveData)
 implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 ```
+
+<br />
+
+<img src="https://user-images.githubusercontent.com/67064997/129222172-8d336785-9dce-446a-a388-65b176ada993.png" width="50%" />
