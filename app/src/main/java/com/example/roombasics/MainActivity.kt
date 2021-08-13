@@ -147,7 +147,6 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked
                 .background(MaterialTheme.colors.primaryVariant)
                 .padding(vertical = 12.dp, horizontal = 24.dp)
                 .clickable {
-                    // onWordClicked(word)
                     showEditForm = !showEditForm
                     editedWord = word.word
                 },
@@ -165,8 +164,8 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked
             // Delete Button
             IconButton(
                 onClick = {
+                    showEditForm = false
                     onTrashClicked(word)
-                    //showEditForm = false
                     Toast.makeText(context, "Word deleted", Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier.size(12.dp)
