@@ -113,7 +113,11 @@ fun WordBookApp(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(words) { word ->
-                WordItemLayout(word, onSaveUpdatedWord = { onUpdateWord(it) })
+                WordItemLayout(
+                    word = word,
+                    onSaveUpdatedWord = { onUpdateWord(it) },
+                    onTrashClicked = { onDeleteWord(it) }
+                )
             }
         }
 
@@ -131,7 +135,7 @@ fun WordBookApp(
 }
 
 @Composable
-fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit) {
+fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked: (Word) -> Unit) {
     var showEditForm by remember { mutableStateOf(false) }
     var editedWord by remember { mutableStateOf(word.word) }
     val context = LocalContext.current
@@ -141,10 +145,11 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.primaryVariant)
-                .padding(vertical = 20.dp, horizontal = 24.dp)
+                .padding(vertical = 12.dp, horizontal = 24.dp)
                 .clickable {
                     // onWordClicked(word)
                     showEditForm = !showEditForm
+                    editedWord = word.word
                 },
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -153,8 +158,25 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit) {
                 text = word.word,
                 color = Color.White,
                 fontSize = 20.sp,
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .weight(1f)
             )
+            // Delete Button
+            IconButton(
+                onClick = {
+                    onTrashClicked(word)
+                    //showEditForm = false
+                    Toast.makeText(context, "Word deleted", Toast.LENGTH_SHORT).show()
+                },
+                modifier = Modifier.size(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Delete Word",
+                    tint = Color.White
+                )
+            }
         }
 
         // word edit form
@@ -169,6 +191,7 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit) {
                     modifier = Modifier.weight(1f),
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White) // TextField Background Color
                 )
+                // Update Button
                 Button(
                     onClick = {
                         val updatedWord: Word = word
@@ -177,7 +200,6 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit) {
                             updatedWord.word = editedWord.trim()
                             onSaveUpdatedWord(updatedWord)
                             Toast.makeText(context, "Word updated", Toast.LENGTH_SHORT).show()
-                            editedWord = word.word
                         }
 
                         showEditForm = false
