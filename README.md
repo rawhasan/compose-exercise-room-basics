@@ -1,5 +1,6 @@
 # Compose Exercise: Room Basics
-- Add, display, and delete data from a Room database using Jetpack Compose.
+- Add, show, edit, and delete data from a Room database using Jetpack Compose.
+- TextField background color change.
 
 ## Dependencies
 ```kt

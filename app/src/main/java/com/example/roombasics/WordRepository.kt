@@ -24,13 +24,19 @@ class WordRepository(private val wordDao: WordDao) {
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun deleteAllWords() {
-        wordDao.deleteAll()
+    suspend fun updateWord(word: Word) {
+        wordDao.update(word)
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun deleteWord(word: Word) {
         wordDao.delete(word)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun deleteAllWords() {
+        wordDao.deleteAll()
     }
 }

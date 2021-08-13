@@ -17,6 +17,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ class MainActivity : ComponentActivity() {
             WordBookApp(
                 wordViewModel = wordViewModel,
                 onAddWord = { wordViewModel.addWord(it) },
+                onUpdateWord = { wordViewModel.updateWord(it) },
                 onDeleteWord = { wordViewModel.deleteWord(it) },
                 onClearWords = { wordViewModel.clearWords() }
             )
@@ -56,6 +58,7 @@ class MainActivity : ComponentActivity() {
 fun WordBookApp(
     wordViewModel: WordViewModel,
     onAddWord: (Word) -> Unit,
+    onUpdateWord: (Word) -> Unit,
     onDeleteWord: (Word) -> Unit,
     onClearWords: () -> Unit
 ) {
@@ -110,7 +113,7 @@ fun WordBookApp(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(words) { word ->
-                WordItemLayout(word, onWordClicked = { onDeleteWord(it) })
+                WordItemLayout(word, onSaveUpdatedWord = { onUpdateWord(it) })
             }
         }
 
@@ -128,22 +131,63 @@ fun WordBookApp(
 }
 
 @Composable
-fun WordItemLayout(word: Word, onWordClicked: (Word) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.primaryVariant)
-            .padding(vertical = 20.dp, horizontal = 24.dp)
-            .clickable { onWordClicked(word) },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Image(painter = painterResource(R.drawable.ic_star), contentDescription = null)
-        Text(
-            text = word.word,
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(start = 16.dp)
-        )
+fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit) {
+    var showEditForm by remember { mutableStateOf(false) }
+    var editedWord by remember { mutableStateOf(word.word) }
+    val context = LocalContext.current
+
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.primaryVariant)
+                .padding(vertical = 20.dp, horizontal = 24.dp)
+                .clickable {
+                    // onWordClicked(word)
+                    showEditForm = !showEditForm
+                },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(painter = painterResource(R.drawable.ic_star), contentDescription = null)
+            Text(
+                text = word.word,
+                color = Color.White,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+
+        // word edit form
+        if (showEditForm) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                TextField(
+                    value = editedWord,
+                    onValueChange = { editedWord = it },
+                    modifier = Modifier.weight(1f),
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.White) // TextField Background Color
+                )
+                Button(
+                    onClick = {
+                        val updatedWord: Word = word
+
+                        if (updatedWord.word != editedWord.trim()) {
+                            updatedWord.word = editedWord.trim()
+                            onSaveUpdatedWord(updatedWord)
+                            Toast.makeText(context, "Word updated", Toast.LENGTH_SHORT).show()
+                            editedWord = word.word
+                        }
+
+                        showEditForm = false
+                    },
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Icon(imageVector = Icons.Filled.Done, contentDescription = "Update Word")
+                }
+            }
+        }
     }
 }
 
