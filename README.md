@@ -46,4 +46,4 @@ implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 
 <br />
 
-<img src="https://user-images.githubusercontent.com/67064997/129222172-8d336785-9dce-446a-a388-65b176ada993.png" width="50%" />
+<img src="https://user-images.githubusercontent.com/67064997/129380620-aedce818-05e1-4c6d-9b9d-66e85bf072de.png" width="50%" />
