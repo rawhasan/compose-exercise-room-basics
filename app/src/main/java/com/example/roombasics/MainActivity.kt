@@ -10,7 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -112,11 +112,16 @@ fun WordBookApp(
                 .padding(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(words) { word ->
+            itemsIndexed(words) { index, word ->
+                val openRowIndex = wordViewModel.openRowIndex.collectAsState()
+
                 WordItemLayout(
                     word = word,
-                    onSaveUpdatedWord = { onUpdateWord(it) },
-                    onTrashClicked = { onDeleteWord(it) }
+                    index = index,
+                    openRowIndex = openRowIndex.value,
+                    onUpdateOpenedRow = { wordViewModel.updateOpenRowIndex(it) },
+                    onTrashClicked = { onDeleteWord(it) },
+                    onSaveUpdatedWord = { onUpdateWord(it) }
                 )
             }
         }
@@ -135,8 +140,15 @@ fun WordBookApp(
 }
 
 @Composable
-fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked: (Word) -> Unit) {
-    var showEditForm by remember { mutableStateOf(false) }
+fun WordItemLayout(
+    word: Word,
+    index: Int,
+    openRowIndex: Int,
+    onUpdateOpenedRow: (Int) -> Unit,
+    onTrashClicked: (Word) -> Unit,
+    onSaveUpdatedWord: (Word) -> Unit
+) {
+    var editFormOpened by remember { mutableStateOf(false) }
     var editedWord by remember { mutableStateOf(word.word) }
     val context = LocalContext.current
 
@@ -147,8 +159,14 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked
                 .background(MaterialTheme.colors.primaryVariant)
                 .padding(vertical = 12.dp, horizontal = 24.dp)
                 .clickable {
-                    showEditForm = !showEditForm
-                    editedWord = word.word
+                    if (!editFormOpened) {
+                        onUpdateOpenedRow(index)
+                        editedWord = word.word
+                        editFormOpened = true
+                    } else {
+                        onUpdateOpenedRow(-1)
+                        editFormOpened = false
+                    }
                 },
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -164,7 +182,7 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked
             // Delete Button
             IconButton(
                 onClick = {
-                    showEditForm = false
+                    editFormOpened = false
                     onTrashClicked(word)
                     Toast.makeText(context, "Word deleted", Toast.LENGTH_SHORT).show()
                 },
@@ -179,7 +197,7 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked
         }
 
         // word edit form
-        if (showEditForm) {
+        if (index == openRowIndex) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom
@@ -201,7 +219,7 @@ fun WordItemLayout(word: Word, onSaveUpdatedWord: (Word) -> Unit, onTrashClicked
                             Toast.makeText(context, "Word updated", Toast.LENGTH_SHORT).show()
                         }
 
-                        showEditForm = false
+                        //showEditForm = false
                     },
                     modifier = Modifier.padding(start = 8.dp)
                 ) {

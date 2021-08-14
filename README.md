@@ -1,11 +1,9 @@
 # Compose Exercise: Room Basics
 - Add, show, edit, and delete data from a Room database using Jetpack Compose.
 - TextField background color change.
+- Keep only one edit form open at a time.
 
 <br />
-
-- [ ] BUG: Deleting a word while multiple edit forms are open shows stale data on the edit forms.
-- [ ] TODO: Close all open edit forms on clicking any Update or Delete button.
 
 ## Dependencies
 ```kt
